@@ -1,0 +1,39 @@
+# liste des question
+
+questions_quiz = [
+    "1/5 - Quel est ton environnement préféré ? (montagne, plage, foret, ville)",
+    "2/5 - Quelle est ta qualité principale ? (calme, loyal, curieux, puissant)",
+    "3/5 - Quel est ton moment préféré de la journée ? (ex: matin, apres-midi, nuit)",
+    "4/5 - Comment réagis-tu face au danger ? (fuite, attaque, strategie, camouflage)",
+    "5/5 - Quel est ton plat ou aliment préféré ? (viande, poisson, fruits, tout)"
+]
+
+# Les animaux possible d'avoir
+
+animaux_totems = [
+    {
+        "nom": "Le loup",
+        "description": "Tu es indépendant, loyal envers ta meute et doté d'un grand sens de la stratégie.",
+        "img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRy5tGPljvaCpJ1nBXDnxVvCdZscizvu6l3hd1P0lw0EA&s=10"
+    },
+    {
+        "nom": "Le chien",
+        "description": "Tu es chaleureux, très sociable et toujours prêt à aider tes amis !",
+        "img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcyvFLFokZqb_-t-2Mov7OY4xxuiKWDVd7MrifDYue-g&s=10"
+    },
+    {
+        "nom": "L'hibou",
+        "description": "Tu es observateur, calme et tu préfères agir la nuit avec sagesse.",
+        "img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGvKvJU3PhDE584b6Uy4dWra7GhQLgt2sLaL8Blkb_Pg&s=10"
+    },
+    {
+        "nom": "Le panda Roux",
+        "description": "Tu es curieux, mignon, épicurien et tu aimes passer du bon temps sans pression.",
+        "img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTW59i7whXQFRbyMB4MvpqcqVF7pgYGBvNqi4iX-RMhRw&s=10"
+    },
+    {
+        "nom": "Le capybara",
+        "description": "Rien ne te perturbe. Tu t'entends avec tout le monde et tu vis ta meilleure vie.",
+        "img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBdDX6kSRVZpsw1j7muPxx2xNhaF8noZmBU8Pxv46UmA&s=10"
+    }
+]
