@@ -37,3 +37,46 @@ animaux_totems = [
         "img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBdDX6kSRVZpsw1j7muPxx2xNhaF8noZmBU8Pxv46UmA&s=10"
     }
 ]
+
+combat_animals = [
+    {
+        "name": "Loup Alpha",
+        "attack": 25,
+        "defense": 10,
+        "vitesse": 15,
+        "hp": 100,
+        "img": ""
+    },
+    {
+        "name": "ours Céleste",
+        "attack": 35,
+        "defense": 20,
+        "vitesse": 5,
+        "hp": 140,
+        "img": ""
+    },
+    {
+        "name": "Aigle Royal",
+        "attack": 20,
+        "defense": 5,
+        "vitesse": 25,
+        "hp": 80,
+        "img": ""
+    },
+    {
+        "name": "Renard des Neiges",
+        "attack": 18,
+        "defense": 8,
+        "vitesse": 22,
+        "hp": 90,
+        "img": ""
+    },
+    {
+        "name": "Tortue Titan",
+        "attack": 15,
+        "defense": 30,
+        "vitesse": 2,
+        "hp": 160,
+        "img": ""
+    }
+]
