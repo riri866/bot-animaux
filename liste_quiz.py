@@ -48,7 +48,7 @@ combat_animals = [
         "img": ""
     },
     {
-        "name": "ours Céleste",
+        "name": "Ours Céleste",
         "attack": 35,
         "defense": 20,
         "vitesse": 5,
