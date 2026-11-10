@@ -14,6 +14,16 @@ intents.message_content = True
 intents.members = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 
+QUIZ_TIMEOUT = 60
+
+VALID_CHOICES = [
+        ["montagne", "plage", "foret", "ville"],
+        ["calme", "loyal", "curieux", "puissant"],
+        ["matin", "apres-midi", "nuit"],
+        ["fuite", "attaque", "strategie", "camouflage"],
+        ["viande", "poisson", "fruits", "tout"]
+    ]
+
 DATA_FILE = "settings.json"
 DODGE_MIN, DODGE_MAX = 5, 23
 MIN_DAMAGE = 5
@@ -67,7 +77,7 @@ async def animals_details(ctx, *, name: str = None):
     totem_animal = next((a for a in totem if a["nom"].lower() == search), None)
 
     if combat_animal is None and totem_animal is None:
-        await ctx.send("Aniaml introuvable, fait liste pour voir les animaux")
+        await ctx.send("Animal introuvable, fait liste pour voir les animaux")
         return
 
     title = totem_animal["nom"] if totem_animal else combat_animal["name"]
@@ -81,74 +91,87 @@ async def animals_details(ctx, *, name: str = None):
 
     await ctx.send(embed=embed)
 
+class QuizView(discord.ui.View):
+
+    def __init__(self, author, choices, last=False):
+        super().__init__(timeout=QUIZ_TIMEOUT)
+        self.author = author
+        self.answers = None
+        self.validated = False
+        self.buttons = {}
+
+        for choice in choices:
+            button = discord.ui.Button(label=choice.capitalize(), style=discord.ButtonStyle.secondary)
+            button.callback = self.make_callback(choice)
+            self.buttons[choice] = button
+            self.add_item(button)
+
+        self.next_button = discord.ui.Button(
+            label="voir mon résultat" if last else "question suivante",
+            style=discord.ButtonStyle.primary, disabled=True, row=1
+        )
+        self.next_button.callback = self.next_question
+        self.add_item(self.next_button)
+
+    async def interaction_check(self, interaction):
+        if interaction.user != self.author:
+            await interaction.response.send_message("ce quiz n'est pas pour toi", ephemeral=True)
+            return False
+        return True
+
+    def make_callback(self, choice):
+        async def callback(interaction):
+            self.answer = choice
+            self.next_button.disabled = False
+            for name, button in self.buttons.items():
+                button.style = discord.ButtonStyle.success if name == choice else discord.ButtonStyle.secondary
+            await interaction.response.edit_message(view=self)
+        return callback
+
+    async def next_question(self, interaction):
+        self.validated = True
+        await interaction.response.edit_message(view=None)
+        self.stop()
+
 @bot.command(name="quiz", description="Découvre ton animal totem")
 async def animal_quiz(context):
 
-    valid_choices = [
-        ["montagne", "plage", "foret", "ville"],
-        ["calme", "loyal", "curieux", "puissant"],
-        ["matin", "apres-midi", "nuit"],
-        ["fuite", "attaque", "strategie", "camouflage"],
-        ["viande", "poisson", "fruits", "tout"]
-    ]
+    user_responses = []
+    total = len(quiz_questions)
 
-    while True :
-        await context.send(f"Bienvenue au quiz des animaux totem {context.author.mention} \n")
+    for i, question in enumerate(quiz_questions):
+        embed = discord.Embed(
+            title=f"Question {i + 1}/{total}",
+            description=f"{question}",
+            color=discord.Color.blurple()
+        )
+        embed.set_footer(text=f"{context.author.display_name} choisis une réponse puis valide")
 
-        def check_message(received_message):
-            return received_message.author == context.author and received_message.channel == context.channel
+        view = QuizView(context.author, VALID_CHOICES[i], last=(i== total -1))
+        await context.send(embed=embed, view=view)
+        await view.wait()
 
-        user_responses = []
-        trap_detected = False
+        if not view.validated:
+            await context.send("temps écoulé, relance !quiz")
+            return
 
-        for question_index, current_question in enumerate(quiz_questions):
-            await context.send(f"{current_question}")
+        user_responses.append(view.answer)
 
-            try:
-                message = await bot.wait_for("message", check=check_message, timeout=60)
-            except asyncio.TimeoutError:
-                await context.send("Temps écoulé, relance !quiz")
-                return
-            
-            cleaned_response = message.content.lower().strip()
-            user_responses.append(message.content)
+    animal = totem[sum(len(r) for r in user_responses) % len(totem)]
 
-            if cleaned_response not in valid_choices[question_index]:
-                trap_detected = True
-
-        await context.send("le bot analyse tes réponses  ...")
-
-        if trap_detected:
-            prank_embed = discord.Embed(
-                title="JE T'AI EU !",
-                description="",
-                color=discord.Color.red()
-            )
-            prank_embed.set_image(url="https://media.tenor.com/6MY0yMmbs3IAAAAM/doakes-im-watching-you.gif")
-            prank_embed.set_footer(text=f"Bien piégé {context.author.display_name}")
-
-            await context.send(embed=prank_embed)
-            await asyncio.sleep(TURN_DELAY)
-            continue
-
-        total_characters = sum(len(response) for response in user_responses)
-        animal_index = total_characters % len(totem)
-        animal = totem[animal_index]
-
-        result_embed = discord.Embed(
+    result_embed = discord.Embed(
             title=f"Ton animal totem est : {animal['nom']}",
             description=f"{animal['description']}\n\n Tes réponses : " + ", ".join(user_responses),
             color=discord.Color.green()
-        )
-        result_embed.set_image(url=animal['img'])
-        result_embed.set_footer(text=f"quiz fait pour {context.author.display_name}")
+    )
+    result_embed.set_image(url=animal['img'])
+    result_embed.set_footer(text=f"quiz fait pour {context.author.display_name}")
 
-        data = load_user_data()
-        get_user(data, context.author)["totem"] = animal["nom"]
-        save_user_data(data)
+    data = load_user_data()
+    get_user(data, context.author)["totem"] = animal["nom"]
+    save_user_data(data)
 
-        await context.send(embed=result_embed)
-        break
+    await context.send(embed=result_embed)
 
 
 def format_stats(animal):
@@ -212,7 +235,6 @@ async def duel(ctx, opponent: discord.Member = None):
             await ctx.send(random.choice([
                 f"{defender_name} esquive l'attaque de {attacker_name} avec grâce et agilité",
                 f"{defender_name} pare le coup de {attacker_name} au dernier moment",
-                f"----------------------\n"
             ]))
 
         else:

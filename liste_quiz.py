@@ -1,11 +1,11 @@
 # liste des question
 
 questions_quiz = [
-    "1/5 - Quel est ton environnement préféré ? (montagne, plage, foret, ville)",
-    "2/5 - Quelle est ta qualité principale ? (calme, loyal, curieux, puissant)",
-    "3/5 - Quel est ton moment préféré de la journée ? (ex: matin, apres-midi, nuit)",
-    "4/5 - Comment réagis-tu face au danger ? (fuite, attaque, strategie, camouflage)",
-    "5/5 - Quel est ton plat ou aliment préféré ? (viande, poisson, fruits, tout)"
+    "1/5 - Quel est ton environnement préféré ?",
+    "2/5 - Quelle est ta qualité principale ?",
+    "3/5 - Quel est ton moment préféré de la journée ?",
+    "4/5 - Comment réagis-tu face au danger ?",
+    "5/5 - Quel est ton plat ou aliment préféré ?"
 ]
 
 # Les animaux possible d'avoir

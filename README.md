@@ -21,5 +21,3 @@ Variables (.env) : Ajouter DISCORD_TOKEN=votre_token
 
 
 Lancement : python main.py
-
-UTILISE DISCORD GOG
