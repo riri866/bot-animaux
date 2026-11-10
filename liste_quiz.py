@@ -79,4 +79,5 @@ combat_animals = [
         "hp": 160,
         "img": ""
     }
+
 ]
